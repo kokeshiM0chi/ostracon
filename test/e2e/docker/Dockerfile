@@ -6,7 +6,7 @@ FROM golang:1.18
 RUN apt-get -qq update -y && apt-get -qq upgrade -y >/dev/null
 RUN apt-get -qq install -y libleveldb-dev make libc-dev libtool >/dev/null
 
-ARG SRCDIR=/src/ostracon
+#ARG SRCDIR=/src/ostracon
 
 # RocksDB 6.24.2+ is required to build with tm-db 0.6.7 (but RocksDB 7.x is not yet supported).
 # librocksdb-dev installed by apt with golang:1.18 is still 6.11, so we have to build it from the latest 6.x sources.
@@ -19,19 +19,27 @@ RUN cd ${ROCKSDB_DIR} && make -j2 shared_lib && make install-shared
 RUN cp /usr/local/lib/librocksdb.so* /usr/lib
 RUN rm -rf ${ROCKSDB_FILE} ${ROCKSDB_DIR}
 
-
 ENV OSTRACON_BUILD_OPTIONS badgerdb,boltdb,cleveldb,rocksdb
 ENV CGO_LDFLAGS -lrocksdb
+WORKDIR /src/ostracon
 
 # Fetch dependencies separately (for layer caching)
-COPY go.mod go.sum ${SRCDIR}
-RUN cd ${SRCDIR} && go mod download
+#COPY go.mod go.sum ${SRCDIR}
+COPY go.mod go.sum ./
+#RUN cd ${SRCDIR} && go mod download
+RUN go mod download
 
 # Build Ostracon and install into /usr/bin/ostracon
-COPY . ${SRCDIR}
+COPY . .
+RUN make build && cp build/tendermint /usr/bin/ostracon
 COPY test/e2e/docker/entrypoint* /usr/bin/
-RUN cd ${SRCDIR} && make build && cp build/ostracon /usr/bin/ostracon
-RUN cd ${SRCDIR}/test/e2e && make node && cp build/node /usr/bin/app
+
+RUN cd test/e2e && make node && cp build/node /usr/bin/app
+#COPY . ${SRCDIR}
+#COPY . .
+#COPY test/e2e/docker/entrypoint* /usr/bin/
+#RUN cd ${SRCDIR} && make build && cp build/ostracon /usr/bin/ostracon
+#RUN cd ${SRCDIR}/test/e2e && make node && cp build/node /usr/bin/app
 
 # Set up runtime directory. We don't use a separate runtime image since we need
 # e.g. leveldb and rocksdb which are already installed in the build image.
