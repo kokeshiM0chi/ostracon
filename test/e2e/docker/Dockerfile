@@ -19,17 +19,6 @@ RUN cd ${ROCKSDB_DIR} && make -j2 shared_lib && make install-shared
 RUN cp /usr/local/lib/librocksdb.so* /usr/lib
 RUN rm -rf ${ROCKSDB_FILE} ${ROCKSDB_DIR}
 
-# Build/Install libsodium separately (for layer caching)
-ARG VRF_ROOT=crypto/vrf/internal/vrf
-ARG LIBSODIUM_ROOT=${VRF_ROOT}/libsodium
-ARG LIBSODIUM_OS=${SRCDIR}/${VRF_ROOT}/sodium/linux_amd64
-COPY ${LIBSODIUM_ROOT} ${LIBSODIUM_ROOT}
-RUN cd ${LIBSODIUM_ROOT} && \
-    ./autogen.sh && \
-    ./configure --disable-shared --prefix="${LIBSODIUM_OS}" && \
-    make && \
-    make install
-RUN rm -rf ${LIBSODIUM_ROOT}
 
 ENV OSTRACON_BUILD_OPTIONS badgerdb,boltdb,cleveldb,rocksdb
 ENV CGO_LDFLAGS -lrocksdb
