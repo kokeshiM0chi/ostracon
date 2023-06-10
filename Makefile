@@ -57,11 +57,11 @@ include tests.mk
 ###                                Build Ostracon                           ###
 ###############################################################################
 
-build: $(LIBSODIUM_TARGET)
+build:
 	CGO_ENABLED=1 go build $(BUILD_FLAGS) -tags "$(BUILD_TAGS)" -o $(OUTPUT) ./cmd/ostracon/
 .PHONY: build
 
-install: $(LIBSODIUM_TARGET)
+install:
 	CGO_ENABLED=1 go install $(BUILD_FLAGS) -tags "$(BUILD_TAGS)" ./cmd/ostracon
 .PHONY: install
 
@@ -261,7 +261,7 @@ DOCKER_CMD = docker run --rm \
 DOCKER_IMG = golang:1.18-alpine
 BUILD_CMD = apk add --update --no-cache git make gcc libc-dev build-base curl jq bash file gmp-dev clang libtool autoconf automake \
 	&& cd $(DOCKER_HOME) \
-	&& LIBSODIUM=$(LIBSODIUM) make build-linux
+	&& make build-linux
 
 # Login docker-container for confirmation building linux binary
 build-shell:
