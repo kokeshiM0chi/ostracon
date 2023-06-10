@@ -15,9 +15,9 @@ node:
 	go build -o build/node -tags badgerdb,boltdb,cleveldb,rocksdb ./node
 
 generator:
-	go build -o build/generator -tags ./generator
+	go build -o build/generator ./generator
 
 runner:
-	go build -o build/runner -tags ./runner
+	go build -o build/runner ./runner
 
 .PHONY: all node docker generator maverick runner
