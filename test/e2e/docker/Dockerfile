@@ -22,7 +22,6 @@ RUN rm -rf ${ROCKSDB_FILE} ${ROCKSDB_DIR}
 
 ENV OSTRACON_BUILD_OPTIONS badgerdb,boltdb,cleveldb,rocksdb
 ENV CGO_LDFLAGS -lrocksdb
-ENV LIBSODIUM 1
 
 # Fetch dependencies separately (for layer caching)
 COPY go.mod go.sum ${SRCDIR}
