@@ -14,6 +14,9 @@ func TestECVRF(t *testing.T) {
 	t.Run("TestVectors", testIETFVectors)
 }
 
+// This test vector follows this value of irtf (A.4. ECVRF-EDWARDS25519-SHA512-ELL2).
+// Please refer to this URL for details.
+// http://www.watersprings.org/pub/id/draft-irtf-cfrg-vrf-07.html#rfc.appendix.A.4
 func testIETFVectors(t *testing.T) {
 	testVectors := []struct {
 		sk    []byte

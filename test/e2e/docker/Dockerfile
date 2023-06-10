@@ -31,7 +31,7 @@ RUN go mod download
 
 # Build Ostracon and install into /usr/bin/ostracon
 COPY . .
-RUN make build && cp build/tendermint /usr/bin/ostracon
+RUN make build && cp build/ostracon /usr/bin/ostracon
 COPY test/e2e/docker/entrypoint* /usr/bin/
 
 RUN cd test/e2e && make node && cp build/node /usr/bin/app
